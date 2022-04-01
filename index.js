@@ -32,17 +32,21 @@ exports.seo = functions.https.onRequest(async (req, res) => {
 });
 
 const getFilledWithTags = (html, { title, desc, image }) => {
+  const formatedTitle = title.replace(/["|']/g, '`')
+  const formatedDesc = desc.replace(/["|']/g, '`')
+  const imageUrl = image || '/'
+  
   return html.replace(
     `<head>`,
     `<head>
-          <meta property="og:title" content="${title.replace(/["|']/g, '`')}" />
-          <meta property="og:description" content="${desc.replace(/["|']/g, '`')}" />
-          <meta property="og:image" content=${image || '/'} />
+          <meta property="og:title" content="${formatedTitle}" />
+          <meta property="og:description" content="${formatedDesc}" />
+          <meta property="og:image" content=${imageUrl} />
           <meta property="og:url" content="${websiteURL + req.url}" />
-          <meta name="twitter:title" content="${title.replace(/["|']/g, '`')}" />
-          <meta name="twitter:description" content="${desc.replace(/["|']/g, '`')}" />
-          <meta name="twitter:image" content=${image || '/'} />
-          <title>${title.replace(/["|']/g, '`')}</title>
+          <meta name="twitter:title" content="${formatedTitle}" />
+          <meta name="twitter:description" content="${formatedDesc}" />
+          <meta name="twitter:image" content=${imageUrl} />
+          <title>${formatedTitle}</title>
         `
   );
 };
