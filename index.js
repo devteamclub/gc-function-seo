@@ -21,8 +21,10 @@ exports.seo = functions.https.onRequest(async (req, res) => {
 
   const { data: html } = await ax.get(websiteURL);
 
-  const { data: meta } = await axios.post(`/seo`, {
-    url: websiteURL + req.url,
+  const { data: meta } = await axios.get(`/seo`, {
+    params: {
+      url: websiteURL + req.url,
+    },
   });
 
   html = getFilledWithTags(html, meta);
@@ -33,14 +35,14 @@ const getFilledWithTags = (html, { title, desc, image }) => {
   return html.replace(
     `<head>`,
     `<head>
-          <meta property="og:title" content="${title}" />
-          <meta property="og:description" content="${desc}" />
-          <meta property="og:image" content=${image} />
+          <meta property="og:title" content="${title.replace(/["|']/g, '`')}" />
+          <meta property="og:description" content="${desc.replace(/["|']/g, '`')}" />
+          <meta property="og:image" content=${image || '/'} />
           <meta property="og:url" content="${websiteURL + req.url}" />
-          <meta name="twitter:title" content="${title}" />
-          <meta name="twitter:description" content="${desc}" />
-          <meta name="twitter:image" content=${image} />
-          <title>${title}</title>
+          <meta name="twitter:title" content="${title.replace(/["|']/g, '`')}" />
+          <meta name="twitter:description" content="${desc.replace(/["|']/g, '`')}" />
+          <meta name="twitter:image" content=${image || '/'} />
+          <title>${title.replace(/["|']/g, '`')}</title>
         `
   );
 };
